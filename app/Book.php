@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Book extends Model
 {
     protected $fillable = [
-        'first_name', 'last_name', 'email'
+        'name', 'description',
     ];
 }

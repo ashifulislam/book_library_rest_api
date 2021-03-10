@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Customer;
+use App\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class CustomerController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth:admin-api');
+    }
     public function index()
     {
-        $customers = Customer::orderBy('id', 'desc')->get();
+        $customers = Author::orderBy('id', 'desc')->get();
         return response()->json($customers);
     }
 
@@ -26,10 +31,11 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $customer = new Customer;
+        $customer = new Author;
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
         $customer->email = $request->email;
+        $customer->password=Hash::make($request->password);
         $customer->save();
         return response()->json($request);
     }
@@ -42,7 +48,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::findOrFail($id);
+        $customer = Author::findOrFail($id);
         return response()->json($customer);
     }
 
@@ -55,10 +61,11 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $customer = Customer::findOrFail($id);
+        $customer = Author::findOrFail($id);
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
         $customer->email = $request->email;
+        $customer->password=Hash::make($request->password);
         $customer->save();
         return response()->json($request);
     }
@@ -71,7 +78,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $customer = Customer::findOrFail($id);
+        $customer = Author::findOrFail($id);
         $customer->delete();
         return response()->json($customer);
     }
