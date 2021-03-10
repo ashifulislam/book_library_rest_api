@@ -13,24 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::post('user_registration','Api\AuthController@register');
-//Route::post('/login','Api\AuthController@login');
-
+Route::post('register','Api\UserAuthController@user_register');
+Route::post('user_login','Api\UserAuthController@login');
 Route::post('login', 'Api\AdminAuthController@login')->name('admin.login');
 Route::post('author_login', 'Api\AuthorAuthController@login')->name('author.login');
-
-
-Route::group(['middleware' => 'auth:api'], function(){
-
-
-    Route::post('admin/get-details', 'Api\AdminAuthController@getDetails');
-});
 Route::resource('books', 'AuthorController')->except(['create', 'edit']);
-
 Route::resource('authors', 'AdminController')->except(['create', 'edit']);
+Route::post('add_book_favourite','Favourite_BooksController@add_favourite_book');
+Route::get('show_book_favourite','Favourite_BooksController@show_favourite_book');
 
 

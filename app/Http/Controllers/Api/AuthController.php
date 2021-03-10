@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function user_register(Request $request)
     {
         $validatedData = $request->validate([
             'name'=>'required|max:55',
@@ -20,8 +20,15 @@ class AuthController extends Controller
         $user = User::create($validatedData);
 
         $accessToken = $user->createToken('authToken')->accessToken;
+        if($accessToken){
+            return response(['user'=> $user, 'access_token'=> $accessToken],200);
 
-        return response(['user'=> $user, 'access_token'=> $accessToken]);
+        }
+        else{
+            return response()->json(['error'=>'jhju'], 202);
+
+        }
+
 
     }
 

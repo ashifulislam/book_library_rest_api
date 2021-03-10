@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -19,8 +20,10 @@ class AdminController extends Controller
     }
     public function index()
     {
-        $customers = Author::orderBy('id', 'desc')->get();
-        return response()->json($customers);
+        $author = DB::table('authors')
+            ->orderBy('id','asc')
+            ->get();
+        return response()->json($author);
     }
 
     /**
@@ -31,13 +34,24 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        $customer = new Author;
-        $customer->first_name = $request->first_name;
-        $customer->last_name = $request->last_name;
-        $customer->email = $request->email;
-        $customer->password=Hash::make($request->password);
-        $customer->save();
-        return response()->json($request);
+            $author = new Author;
+            $author->first_name = $request->first_name;
+            $author->last_name = $request->last_name;
+            $author->email = $request->email;
+            $author->password=Hash::make($request->password);
+        $email = Author::where('email',$request->email)->first();
+        if($email)
+        {
+            return response()->json(['error'=>'duplicate'], 202);
+
+        }
+        else
+            {
+
+            $author->save();
+            return response()->json($request);
+        }
+
     }
 
     /**
@@ -48,8 +62,8 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        $customer = Author::findOrFail($id);
-        return response()->json($customer);
+        $author = Author::findOrFail($id);
+        return response()->json($author);
     }
 
     /**
@@ -61,13 +75,24 @@ class AdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $customer = Author::findOrFail($id);
-        $customer->first_name = $request->first_name;
-        $customer->last_name = $request->last_name;
-        $customer->email = $request->email;
-        $customer->password=Hash::make($request->password);
-        $customer->save();
-        return response()->json($request);
+        $author = Author::findOrFail($id);
+        $author->first_name = $request->first_name;
+        $author->last_name = $request->last_name;
+        $author->email = $request->email;
+        $author->password=Hash::make($request->password);
+        $email = Author::where('email',$request->email)->first();
+        if($email)
+        {
+            return response()->json(['error'=>'duplicate'], 202);
+
+        }
+        else
+        {
+
+            $author->save();
+            return response()->json($request);
+        }
+
     }
 
     /**
@@ -78,8 +103,8 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        $customer = Author::findOrFail($id);
-        $customer->delete();
-        return response()->json($customer);
+        $author = Author::findOrFail($id);
+        $author->delete();
+        return response()->json($author);
     }
 }

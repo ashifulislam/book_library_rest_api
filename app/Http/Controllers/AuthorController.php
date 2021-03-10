@@ -6,6 +6,7 @@ use App\Author;
 use App\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Auth;
 
 class AuthorController extends Controller
 {
@@ -14,14 +15,15 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-//    public function __construct()
-//    {
-//        $this->middleware('auth:admin-api');
-//    }
+    public function __construct()
+    {
+        $this->middleware('auth:author-api')->except('index');
+    }
     public function index()
     {
-        $customers = Book::orderBy('id', 'desc')->get();
-        return response()->json($customers);
+        $books = Book::orderBy('id', 'asc')
+            ->get();
+        return response()->json($books);
     }
 
     /**
@@ -32,9 +34,11 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $author_id =Auth::user()->id;
         $books = new Book;
         $books->name = $request->name;
         $books->description = $request->description;
+        $books->author_id = $author_id;
         $books->save();
         return response()->json($request);
     }

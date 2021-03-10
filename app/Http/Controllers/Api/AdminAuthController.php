@@ -25,10 +25,6 @@ class AdminAuthController extends Controller
             return response()->json(['error'=>'Unauthorised'], 202);
         }
     }
-    public function getDetails()
-    {
-        $user = Auth::guard('admin-api')->user();
-        return response()->json(['success' => $user], 200);
-    }
+
 
 }
